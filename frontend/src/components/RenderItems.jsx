@@ -1,36 +1,12 @@
 import React from 'react';
-import { bool } from 'prop-types';
-
-const todoItems = [
-  {
-    id: 1,
-    title: 'Go to Market',
-    description: 'Buy ingredients to prepare dinner',
-    completed: true,
-  },
-  {
-    id: 2,
-    title: 'Study',
-    description: 'Read Algebra and History textbook for the upcoming test',
-    completed: false,
-  },
-  {
-    id: 3,
-    title: "Sammy's books",
-    description: "Go to library to return Sammy's books",
-    completed: true,
-  },
-  {
-    id: 4,
-    title: 'Article',
-    description: 'Write article on how to use Django with React',
-    completed: false,
-  },
-];
+import {
+  arrayOf, bool, number, shape, string, func,
+} from 'prop-types';
 
 export default function RenderItems(props) {
-  const { viewCompleted } = props;
-  // const [todoList, setTodoList] = useState(todoItems);
+  const {
+    viewCompleted, todoItems, setActiveItemData, setModalState,
+  } = props;
   const newItems = todoItems.filter(
     (item) => item.completed === viewCompleted,
   );
@@ -54,12 +30,17 @@ export default function RenderItems(props) {
             <button
               type="button"
               className="btn btn-secondary mr-2"
+              onClick={() => {
+                setActiveItemData(item);
+                setModalState(true);
+              }}
             >
               Edit
             </button>
             <button
               type="button"
               className="btn btn-danger"
+              onClick={() => alert('Are you sure you want to delete this task?')}
             >
               Delete
             </button>
@@ -71,9 +52,13 @@ export default function RenderItems(props) {
 }
 
 RenderItems.propTypes = {
-  viewCompleted: bool,
-};
-
-RenderItems.defaultProps = {
-  viewCompleted: false,
+  viewCompleted: bool.isRequired,
+  todoItems: arrayOf(shape({
+    id: number,
+    title: string,
+    description: string,
+    completed: bool,
+  })).isRequired,
+  setActiveItemData: func.isRequired,
+  setModalState: func.isRequired,
 };

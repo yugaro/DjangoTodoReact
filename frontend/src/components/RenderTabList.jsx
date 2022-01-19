@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { bool, func } from 'prop-types';
+import React from 'react';
 
-export default function RenderTabList() {
-  const [viewCompleted, setViewCompleted] = useState(false);
-
+export default function RenderTabList(props) {
+  const { viewCompleted, setViewCompleted } = props;
   return (
     <div className="nav nav-tabs">
       <button
@@ -22,3 +22,8 @@ export default function RenderTabList() {
     </div>
   );
 }
+
+RenderTabList.propTypes = {
+  viewCompleted: bool.isRequired,
+  setViewCompleted: func.isRequired,
+};
