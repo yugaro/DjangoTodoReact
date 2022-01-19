@@ -51,7 +51,7 @@ export default function CustomModal(props) {
               placeholder="Enter Todo description"
             />
           </FormGroup>
-          <FormGroup>
+          <FormGroup check>
             <Label check>
               <Input
                 type="checkbox"
@@ -59,6 +59,7 @@ export default function CustomModal(props) {
                 checked={activeItem.completed}
                 onChange={handleChange}
               />
+              Completed
             </Label>
           </FormGroup>
         </Form>

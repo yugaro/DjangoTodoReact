@@ -1,35 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import RenderItems from '../components/RenderItems';
 import RenderTabList from '../components/RenderTabList';
 import CustomModal from '../components/CustomModal';
-
-const todoItems = [
-  {
-    id: 1,
-    title: 'Go to Market',
-    description: 'Buy ingredients to prepare dinner',
-    completed: true,
-  },
-  {
-    id: 2,
-    title: 'Study',
-    description: 'Read Algebra and History textbook for the upcoming test',
-    completed: false,
-  },
-  {
-    id: 3,
-    title: "Sammy's books",
-    description: "Go to library to return Sammy's books",
-    completed: true,
-  },
-  {
-    id: 4,
-    title: 'Article',
-    description: 'Write article on how to use Django with React',
-    completed: false,
-  },
-];
 
 export default function EditScreen() {
   const [viewCompleted, setViewCompleted] = useState(false);
@@ -39,6 +13,32 @@ export default function EditScreen() {
     description: '',
     completed: false,
   });
+  const [todoList, setTodoList] = useState([
+    // {
+    //   id: 1,
+    //   title: 'Go to Market',
+    //   description: 'Buy ingredients to prepare dinner',
+    //   completed: true,
+    // },
+    // {
+    //   id: 2,
+    //   title: 'Study',
+    //   description: 'Read Algebra and History textbook for the upcoming test',
+    //   completed: false,
+    // },
+    // {
+    //   id: 3,
+    //   title: "Sammy's books",
+    //   description: "Go to library to return Sammy's books",
+    //   completed: true,
+    // },
+    // {
+    //   id: 4,
+    //   title: 'Article',
+    //   description: 'Write article on how to use Django with React',
+    //   completed: false,
+    // },
+  ]);
 
   const createItem = () => {
     const item = {
@@ -49,6 +49,29 @@ export default function EditScreen() {
     setActiveItemData(item);
     setModalState(true);
   };
+
+  const refreshList = () => {
+    axios
+      .get('/api/todos/')
+      .then((res) => setTodoList(res.data))
+      .catch((err) => alert(err));
+  };
+
+  const handleSubmit = (item) => {
+    setModalState(false);
+    if (item.id) {
+      axios
+        .put(`/api/todos/${item.id}/`, item)
+        .then(() => refreshList);
+      return;
+    }
+    axios
+      .post('/api/todos/', item)
+      .then(() => refreshList);
+    alert('Are you sure you want to save.');
+  };
+
+  useEffect(() => refreshList, []);
 
   return (
     <main className="container">
@@ -71,7 +94,8 @@ export default function EditScreen() {
             />
             <RenderItems
               viewCompleted={viewCompleted}
-              todoItems={todoItems}
+              todoList={todoList}
+              setTodoList={setTodoList}
               setActiveItemData={setActiveItemData}
               setModalState={setModalState}
             />
@@ -80,12 +104,9 @@ export default function EditScreen() {
       </div>
       {modalState ? (
         <CustomModal
-          activeItemData={activeItemData}
           toggle={() => setModalState(false)}
-          onSave={(item) => {
-            setModalState(false);
-            alert(`save${JSON.stringify(item)}`);
-          }}
+          onSave={handleSubmit}
+          activeItemData={activeItemData}
         />
       ) : null}
     </main>

@@ -2,14 +2,26 @@ import React from 'react';
 import {
   arrayOf, bool, number, shape, string, func,
 } from 'prop-types';
+import axios from 'axios';
 
 export default function RenderItems(props) {
   const {
-    viewCompleted, todoItems, setActiveItemData, setModalState,
+    viewCompleted, todoList, setTodoList, setActiveItemData, setModalState,
   } = props;
-  const newItems = todoItems.filter(
+
+  const newItems = todoList.filter(
     (item) => item.completed === viewCompleted,
   );
+
+  const handleDelete = (item) => {
+    alert('Are you sure you want to delete this task?');
+    axios
+      .delete(`/api/todos/${item.id}/`)
+      .then(() => axios
+        .get('/api/todos/')
+        .then((res) => setTodoList(res.data))
+        .catch((err) => alert(err)));
+  };
 
   return (
     <ul className="list-group list-group-flush border-top-0">
@@ -40,7 +52,7 @@ export default function RenderItems(props) {
             <button
               type="button"
               className="btn btn-danger"
-              onClick={() => alert('Are you sure you want to delete this task?')}
+              onClick={() => handleDelete}
             >
               Delete
             </button>
@@ -53,12 +65,13 @@ export default function RenderItems(props) {
 
 RenderItems.propTypes = {
   viewCompleted: bool.isRequired,
-  todoItems: arrayOf(shape({
+  todoList: arrayOf(shape({
     id: number,
     title: string,
     description: string,
     completed: bool,
   })).isRequired,
+  setTodoList: func.isRequired,
   setActiveItemData: func.isRequired,
   setModalState: func.isRequired,
 };
