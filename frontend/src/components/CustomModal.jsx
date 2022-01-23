@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   func, shape, string, bool,
 } from 'prop-types';
@@ -7,9 +7,11 @@ import {
 } from 'reactstrap';
 
 export default function CustomModal(props) {
-  const { toggle, onSave, activeItemData } = props;
+  const {
+    toggle, onSave, activeItemData, setActiveItemData,
+  } = props;
 
-  const [activeItem, setActiveItem] = useState(activeItemData);
+  // const [activeItem, setActiveItem] = useState(activeItemData);
 
   const handleChange = (e) => {
     const { name } = e.target;
@@ -18,8 +20,8 @@ export default function CustomModal(props) {
       value = e.target.checked;
     }
 
-    const newActiveItem = { ...activeItem, [name]: value };
-    setActiveItem({ newActiveItem });
+    const newActiveItem = { ...activeItemData, [name]: value };
+    setActiveItemData({ newActiveItem });
   };
 
   return (
@@ -35,7 +37,7 @@ export default function CustomModal(props) {
               type="text"
               id="todo-title"
               name="description"
-              value={activeItem.title}
+              value={activeItemData.title}
               onChange={handleChange}
               placeholder="Enter Todo Title"
             />
@@ -46,7 +48,7 @@ export default function CustomModal(props) {
               type="text"
               id="todo-description"
               name="description"
-              value={activeItem.description}
+              value={activeItemData.description}
               onChange={handleChange}
               placeholder="Enter Todo description"
             />
@@ -56,7 +58,7 @@ export default function CustomModal(props) {
               <Input
                 type="checkbox"
                 name="completed"
-                checked={activeItem.completed}
+                checked={activeItemData.completed}
                 onChange={handleChange}
               />
               Completed
@@ -67,7 +69,7 @@ export default function CustomModal(props) {
       <ModalFooter>
         <Button
           color="success"
-          onClick={() => onSave(activeItem)}
+          onClick={() => onSave(activeItemData)}
         >
           Save
         </Button>
@@ -84,4 +86,5 @@ CustomModal.propTypes = {
     description: string,
     completed: bool,
   }).isRequired,
+  setActiveItemData: func.isRequired,
 };

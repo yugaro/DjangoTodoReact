@@ -107,6 +107,7 @@ export default function EditScreen() {
           toggle={() => setModalState(false)}
           onSave={handleSubmit}
           activeItemData={activeItemData}
+          setActiveItemData={setActiveItemData}
         />
       ) : null}
     </main>
